@@ -5,21 +5,21 @@ phases:
     commands:
       - echo "Detecting architecture and installing Terraform..."
       - sudo yum install -y unzip wget
-      - TF_VERSION="1.14.3"
-      # Detect if system is x86_64 (amd64) or aarch64 (arm64)
+      - TF_VERSION="1.11.4"
       - ARCH=$(uname -m)
       - if [ "$ARCH" = "x86_64" ]; then TF_ARCH="amd64"; else TF_ARCH="arm64"; fi
       - echo "Downloading Terraform v${TF_VERSION} for ${TF_ARCH}..."
-      - wget releases.hashicorp.com{TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip
-      - unzip terraform_${TF_VERSION}_linux_${TF_ARCH}.zip
+      # Fixed URL with full quotes and explicit protocol
+      - wget "releases.hashicorp.com{TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
+      - unzip "terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
       - sudo mv terraform /usr/local/bin/
       - terraform version
   pre_build:
     commands:
       - echo "Initializing with S3 Backend..."
-      # Replace these with your actual S3 bucket details
+      # Use your actual bucket name, key, and region
       - terraform init -input=false \
-          -backend-config="bucket=your-terraform-state-bucket-name" \
+          -backend-config="bucket=terr-bkt" \
           -backend-config="key=terraform.tfstate" \
           -backend-config="region=us-east-1"
   build:
