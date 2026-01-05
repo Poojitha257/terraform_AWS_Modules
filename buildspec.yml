@@ -1,53 +1,29 @@
 version: 0.2
  
 phases:
-
   install:
-
-    runtime-versions:
-
-      python: 3.9
-
     commands:
-
-      - echo Installing Terraform
-
-      - wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
-
-      - unzip terraform_1.5.7_linux_amd64.zip
-
+      - echo Installing Terraform 1.14.3
+      - curl -O https://releases.hashicorp.com/terraform/1.14.3/terraform_1.14.3_linux_amd64.zip
+      - unzip terraform_1.14.3_linux_amd64.zip
       - mv terraform /usr/local/bin/
-
-      - terraform version
+      - terraform --version
  
   pre_build:
-
     commands:
-
-      - echo Logging in and validating
-
+      - echo Initializing Terraform
       - terraform init
  
   build:
-
     commands:
-
       - echo Running Terraform plan
-
       - terraform plan -out=tfplan
  
   post_build:
-
     commands:
-
-      - echo Apply Terraform
-
+      - echo Applying Terraform
       - terraform apply -auto-approve tfplan
  
 artifacts:
-
   files:
-
     - '**/*'
-
- 
