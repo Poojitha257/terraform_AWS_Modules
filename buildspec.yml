@@ -1,0 +1,16 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - sudo yum install -y yum-utils
+      - sudo yum-config-manager --add-repo rpm.releases.hashicorp.com
+      - sudo yum -y install terraform
+  pre_build:
+    commands:
+      - terraform init -backend-config="bucket=terr-bkt"
+  build:
+    commands:
+      - terraform plan -out=tfplan
+  post_build:
+    commands:
+      - terraform apply -auto-approve tfplan
