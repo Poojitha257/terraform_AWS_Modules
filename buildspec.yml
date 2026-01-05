@@ -1,17 +1,53 @@
 version: 0.2
-
+ 
 phases:
+
   install:
+
+    runtime-versions:
+
+      python: 3.9
+
     commands:
-      - sudo yum install -y yum-utils
-      - sudo yum-config-manager --add-repo rpm.releases.hashicorp.com
-      - sudo yum -y install terraform
+
+      - echo Installing Terraform
+
+      - wget https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
+
+      - unzip terraform_1.5.7_linux_amd64.zip
+
+      - mv terraform /usr/local/bin/
+
+      - terraform version
+ 
   pre_build:
+
     commands:
-      - terraform init -input=false
+
+      - echo Logging in and validating
+
+      - terraform init
+ 
   build:
+
     commands:
-      - terraform plan -out=tfplan -input=false
+
+      - echo Running Terraform plan
+
+      - terraform plan -out=tfplan
+ 
   post_build:
+
     commands:
+
+      - echo Apply Terraform
+
       - terraform apply -auto-approve tfplan
+ 
+artifacts:
+
+  files:
+
+    - '**/*'
+
+ 
