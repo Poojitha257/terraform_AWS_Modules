@@ -1,16 +1,25 @@
 version: 0.2
+
 phases:
   install:
     commands:
-      - sudo yum install -y yum-utils
-      - sudo yum-config-manager --add-repo rpm.releases.hashicorp.com
-      - sudo yum -y install terraform
+      - echo "Installing Terraform..."
+      # Install unzip if not present
+      - sudo yum install -y unzip
+      # Download specific Terraform version (v1.14.3)
+      - TF_VERSION="1.14.3"
+      - wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+      # Unzip and move to global path
+      - unzip terraform_${TF_VERSION}_linux_amd64.zip
+      - sudo mv terraform /usr/local/bin/
+      - terraform version
   pre_build:
     commands:
-      - terraform init -backend-config="bucket=terr-bkt"
+      # Initialize without remote backend
+      - terraform init -input=false
   build:
     commands:
-      - terraform plan -out=tfplan
+      - terraform plan -out=tfplan -input=false
   post_build:
     commands:
       - terraform apply -auto-approve tfplan
